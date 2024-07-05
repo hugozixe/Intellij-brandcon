@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EZEN.brandcon.Product.ProductMapper">
+    <select id = "findAll" resultType = "EZEN.brandcon.Product.ProductResponse">
+        SELECT
+        product.id,
+        product.image_url,
+        product.price,
+        product.name AS product_name,
+        brand.name
+
+        FROM product
+        JOIN brand
+        ON product.brand_id = brand.id
+        JOIN category
+        ON brand.category_id = category.id
+        JOIN category_brand AS cb
+        ON cb.brand_id = product.brand_id
+        <where>
+                <if test = "brandId != null">
+                    and product.brand_id = #{brandId}
+                </if>
+            <if test = "categoryId != null">
+                and cb.category_id = #{categoryId}
+            </if>
+        </where>
+        <if test = "sort == 'POPULAR'">
+            order by sales DESC
+        </if>
+    </select>
+</mapper>
